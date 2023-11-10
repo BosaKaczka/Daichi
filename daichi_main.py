@@ -2,9 +2,7 @@ import asyncio
 import discord
 from discord.ext import commands
 import os
-import settings
-
-logger = settings.logging.getLogger("bot")
+from dotenv import load_dotenv
 
 
 def run():
@@ -13,7 +11,9 @@ def run():
 
     @bot.event
     async def on_ready():
-        logger.info(f'User: {bot.user} (ID: {bot.user.id})')
+        guild_count = len(bot.guilds)
+        await bot.change_presence(
+            activity=discord.Activity(type=discord.ActivityType.watching, name=f'{guild_count} servers.'))
 
     @bot.event
     async def on_guild_join(guild):
@@ -55,10 +55,12 @@ def run():
 
     async def main():
         await load()
-        await bot.start(settings.TOKEN)
+        load_dotenv()
+        await bot.start(os.getenv('DISCORD_TOKEN'))
 
     asyncio.run(main())
 
 
 if __name__ == "__main__":
     run()
+

@@ -1,20 +1,19 @@
 import asyncio
 import discord
 from discord.ext import commands
-from discord import FFmpegPCMAudio
 import os
-import settings
-
-logger = settings.logging.getLogger("bot")
+from dotenv import load_dotenv
 
 
 def run():
     bot = commands.Bot(command_prefix='-', intents=discord.Intents.all(), application_id='1109783803263733882',
-                       activity=discord.Game(name="TESTING"))
+                       activity=discord.Game(name="Strzeging"))
 
     @bot.event
     async def on_ready():
-        logger.info(f'User: {bot.user} (ID: {bot.user.id})')
+        guild_count = len(bot.guilds)
+        await bot.change_presence(
+            activity=discord.Activity(type=discord.ActivityType.watching, name=f'{guild_count} servers.'))
 
     @bot.event
     async def on_guild_join(guild):
@@ -49,14 +48,22 @@ def run():
         await bot.load_extension(f'cogs.{name}')
         await ctx.message.delete()
 
-    async def load_all():
+    async def load():
         for file in os.listdir('./cogs'):
             if file.endswith('.py'):
-                await bot.load_extension(f'cogs.{file[:-3]}')
+                cog_name = file[:-3]
+                if cog_name != 'nomc':
+                    await bot.load_extension(f'cogs.{cog_name}')
+                else:
+                    # Load nomc only for a specific server (replace SERVER_ID with the desired server's ID)
+                    server_id = '1002543362819227708'
+                    if any(guild.id == int(server_id) for guild in bot.guilds):
+                        await bot.load_extension(f'cogs.{cog_name}')
 
     async def main():
-        await load_all()
-        await bot.start(settings.TOKEN)
+        await load()
+        load_dotenv()
+        await bot.start(os.getenv('DISCORD_TOKEN'))
 
     asyncio.run(main())
 
