@@ -17,15 +17,13 @@ class HELLO(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member):
         guild_id = str(member.guild.id)
-        print(guild_id)
         if check_set('data/daichi_settings.json', guild_id):
             settings = get_settings('data/daichi_settings.json', guild_id)
 
             get_picture(member.avatar.url)
             match guild_id:
-                case "1002543362819227708":
+                case "1097196815822110720":  # 1097196815822110720 <- nomc
                     nomc(member.name)
-                    print("hello")
 
                 case _:
                     make_banner(settings['banner'],
@@ -43,6 +41,19 @@ class HELLO(commands.Cog):
                 print(f"An error occurred while sending the file: {e}")
             clear("work/")
 
+    @app_commands.command(name="test", description="")
+    async def test(self, interaction: discord.Interaction):
+        get_picture(interaction.user.avatar.url)
+        nomc(interaction.user.name)
+
+        channel = self.bot.get_channel(interaction.response)
+        try:
+            with open("work/final.png", "rb") as file:
+                await channel.send(file=discord.File(file))
+        except Exception as e:
+            print(f"An error occurred while sending the file: {e}")
+        clear("work/")
+
     @app_commands.command(name="greet", description="Select welcome channel")
     async def hello_set(
             self,
@@ -50,7 +61,7 @@ class HELLO(commands.Cog):
             channel_mention: str,
             join_information: str = "just joined",
             greet: str = "Welcome to the server!",
-            banner: str = "1",
+            banner: str = "horizontal",
             color: str = "default",
 
     ) -> None:

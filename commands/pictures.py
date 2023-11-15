@@ -21,7 +21,7 @@ def nomc(name: str):
     combined_image.paste(cir, (int(width / 2 - mid), int(53)), cir)
     combined_image.save("work/welcome_card.png")
     img = Image.open("work/welcome_card.png")
-    font = ImageFont.truetype("fonts/font.TTF", 50)
+    font = ImageFont.truetype("fonts/nomc.TTF", 47)
     draw = ImageDraw.Draw(img)
     draw.text((int(width / 2), int(375)), f"{name}",
               (255, 255, 255), anchor="mm", font=font)
@@ -34,29 +34,35 @@ def make_banner(banner: str, color: str, name: str, join_information: str, greet
     width, height = card.size
 
     if width > height:
-        side = int(height * 0.7)
+        side = int(height * 0.6)
     else:
-        side = int(width * 0.7)
+        side = int(width * 0.6)
     pfp = Image.open("work/user.png").resize((side, side))
+    mask = Image.new('L', (side, side), 0)
+    draw = ImageDraw.Draw(mask)
+    draw.ellipse((0, 0, side, side), fill=255)
+    pfp.putalpha(mask)
+    pfp.save('work/user_circular.png')
+    cir = Image.open("work/user_circular.png")
 
     combined_image = Image.new("RGB", (width, height))
 
     mid = side / 2
 
     combined_image.paste(card, (0, 0))
-    combined_image.paste(pfp, (int(width / 2 - mid), int(height / 2 - mid)))
+    combined_image.paste(cir, (int(width / 2 - mid), int(height / 2 - mid)), cir)
 
     combined_image.save("work/welcome_card.png")
 
     img = Image.open("work/welcome_card.png")
-    font = ImageFont.truetype("fonts/font.TTF", 24)
+    font = ImageFont.truetype("fonts/font.TTF", 40)
 
     draw = ImageDraw.Draw(img)
-    draw.text((int(width / 2), int(height / 2 - mid * 1.15)),
+    draw.text((int(width / 2), int(height / 2 - mid * 1.30)),
               f"{name} {join_information}",
               (255, 255, 255), anchor="mm", font=font)
 
-    draw.text((int(width / 2), int(height / 2 + mid * 1.15)), f"{greet}", (255, 255, 255),
+    draw.text((int(width / 2), int(height / 2 + mid * 1.35)), f"{greet}", (255, 255, 255),
               anchor="mm", font=font)
 
     img.save("work/final.png")
