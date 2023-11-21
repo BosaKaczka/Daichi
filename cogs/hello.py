@@ -10,9 +10,9 @@ class HELLO(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print('ready')
+    # @commands.Cog.listener()
+    # async def on_ready(self):
+    #     print('ready')
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -40,19 +40,6 @@ class HELLO(commands.Cog):
             except Exception as e:
                 print(f"An error occurred while sending the file: {e}")
             clear("work/")
-
-    @app_commands.command(name="test", description="")
-    async def test(self, interaction: discord.Interaction):
-        get_picture(interaction.user.avatar.url)
-        nomc(interaction.user.name)
-
-        channel = self.bot.get_channel(interaction.response)
-        try:
-            with open("work/final.png", "rb") as file:
-                await channel.send(file=discord.File(file))
-        except Exception as e:
-            print(f"An error occurred while sending the file: {e}")
-        clear("work/")
 
     @app_commands.command(name="greet", description="Select welcome channel")
     async def hello_set(

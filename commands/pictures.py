@@ -1,5 +1,5 @@
 import os
-from PIL import Image, ImageFont, ImageDraw
+from PIL import Image, ImageFont, ImageDraw, ImageFilter
 import requests
 from io import BytesIO
 
@@ -7,7 +7,7 @@ from io import BytesIO
 def nomc(name: str):
     card = Image.open(f"custom/nomc.png")
     width, height = card.size
-    side = 206
+    side = 175  # <-
     pfp = Image.open("work/user.png").resize((side, side))
     mask = Image.new('L', (side, side), 0)
     draw = ImageDraw.Draw(mask)
@@ -18,12 +18,14 @@ def nomc(name: str):
     combined_image = Image.new("RGB", (width, height))  # RGB
     mid = side / 2
     combined_image.paste(card, (0, 0))
-    combined_image.paste(cir, (int(width / 2 - mid), int(53)), cir)
+    combined_image.paste(cir, (int((width / 2 - mid)-1), int(39)), cir)  # <-
     combined_image.save("work/welcome_card.png")
     img = Image.open("work/welcome_card.png")
-    font = ImageFont.truetype("fonts/nomc.TTF", 47)
+    font = ImageFont.truetype("fonts/nomc.TTF", 70)
     draw = ImageDraw.Draw(img)
-    draw.text((int(width / 2), int(375)), f"{name}",
+    x = 2
+    draw.text((int((width / 2)+x), int(360+x)), f"{name}", (0, 0, 0, 128), anchor="mm", font=font)
+    draw.text((int(width / 2), int(360)), f"{name}",
               (255, 255, 255), anchor="mm", font=font)
     img.save("work/final.png")
     return

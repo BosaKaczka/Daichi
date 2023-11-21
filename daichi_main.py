@@ -7,27 +7,27 @@ from dotenv import load_dotenv
 
 def run():
     bot = commands.Bot(command_prefix='?', intents=discord.Intents.all(), application_id='1162683364986327070',
-                       activity=discord.Game(name="Newborn - Work in progress"))
+                       activity=discord.Game(name="Launching"))
 
-    @bot.event
-    async def on_ready():
-        guild_count = len(bot.guilds)
-        await bot.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.watching, name=f'{guild_count} servers.'))
+    # @bot.event
+    # async def on_ready():
+    #     guild_count = len(bot.guilds)
+    #     await bot.change_presence(
+    #         activity=discord.Activity(type=discord.ActivityType.watching, name=f'{guild_count} servers.'))
 
     @bot.event
     async def on_guild_join(guild):
         fmt = await bot.tree.sync()
         print(f'Synced {len(fmt)} commands.')
-        guild_count = len(bot.guilds)
-        await bot.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.watching, name=f'{guild_count} servers.'))
+        # guild_count = len(bot.guilds)
+        # await bot.change_presence(
+        #     activity=discord.Activity(type=discord.ActivityType.watching, name=f'{guild_count} servers.'))
 
-    @bot.event
-    async def on_guild_remove(guild):
-        guild_count = len(bot.guilds)
-        await bot.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.watching, name=f'{guild_count} servers.'))
+    # @bot.event
+    # async def on_guild_remove(guild):
+    #     guild_count = len(bot.guilds)
+    #     await bot.change_presence(
+    #         activity=discord.Activity(type=discord.ActivityType.watching, name=f'{guild_count} servers.'))
 
     @bot.command()
     @commands.is_owner()
@@ -51,7 +51,11 @@ def run():
     async def load():
         for file in os.listdir('./cogs'):
             if file.endswith('.py'):
-                await bot.load_extension(f'cogs.{file[:-3]}')
+                try:
+                    await bot.load_extension(f'cogs.{file[:-3]}')
+                    print(f"{file[:-3]} ✔")
+                except Exception as e:
+                    print(f"{file[:-3]} X - Error {e} ")
 
     async def main():
         await load()

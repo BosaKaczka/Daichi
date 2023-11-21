@@ -6,28 +6,30 @@ from dotenv import load_dotenv
 
 
 def run():
-    bot = commands.Bot(command_prefix='-', intents=discord.Intents.all(), application_id='1109783803263733882',
-                       activity=discord.Game(name="Strzeging"))
+    bot = commands.Bot(command_prefix='-', intents=discord.Intents.all(),
+                       activity=discord.Game(name="Starting"))
 
-    @bot.event
-    async def on_ready():
-        guild_count = len(bot.guilds)
-        await bot.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.watching, name=f'{guild_count} servers.'))
+    # @bot.event
+    # async def on_ready():
+    #     fmt = await bot.tree.sync()
+    #     print(f'Synced {len(fmt)} commands.')
+    #     guild_count = len(bot.guilds)
+    #     await bot.change_presence(
+    #         activity=discord.Activity(type=discord.ActivityType.watching, name=f'{guild_count} servers.'))
 
     @bot.event
     async def on_guild_join(guild):
         fmt = await bot.tree.sync()
         print(f'Synced {len(fmt)} commands.')
-        guild_count = len(bot.guilds)
-        await bot.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.watching, name=f'{guild_count} servers.'))
+        # guild_count = len(bot.guilds)
+        # await bot.change_presence(
+        #     activity=discord.Activity(type=discord.ActivityType.watching, name=f'{guild_count} servers.'))
 
-    @bot.event
-    async def on_guild_remove(guild):
-        guild_count = len(bot.guilds)
-        await bot.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.watching, name=f'{guild_count} servers.'))
+    # @bot.event
+    # async def on_guild_remove(guild):
+    #     guild_count = len(bot.guilds)
+    #     await bot.change_presence(
+    #         activity=discord.Activity(type=discord.ActivityType.watching, name=f'{guild_count} servers.'))
 
     @bot.command()
     @commands.is_owner()
@@ -51,14 +53,11 @@ def run():
     async def load():
         for file in os.listdir('./cogs'):
             if file.endswith('.py'):
-                cog_name = file[:-3]
-                if cog_name != 'nomc':
-                    await bot.load_extension(f'cogs.{cog_name}')
-                else:
-                    # Load nomc only for a specific server (replace SERVER_ID with the desired server's ID)
-                    server_id = '1002543362819227708'
-                    if any(guild.id == int(server_id) for guild in bot.guilds):
-                        await bot.load_extension(f'cogs.{cog_name}')
+                try:
+                    await bot.load_extension(f'cogs.{file[:-3]}')
+                    print(f"{file[:-3]} ✔")
+                except Exception as e:
+                    print(f"{file[:-3]} X - Error {e} ")
 
     async def main():
         await load()
@@ -70,3 +69,4 @@ def run():
 
 if __name__ == "__main__":
     run()
+
