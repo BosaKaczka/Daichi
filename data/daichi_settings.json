@@ -1,5 +1,12 @@
 {
   "1097196815822110720": {
     "channel_mention": 1167416451460780072
+  },
+  "1002543362819227708": {
+    "channel_mention": 1099674462460317766,
+    "join_information": "just joined",
+    "greet": "Welcome to the server!",
+    "banner": "horizontal",
+    "color": "default"
   }
 }
